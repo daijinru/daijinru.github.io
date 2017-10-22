@@ -228,10 +228,248 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/10/23/省市县数据的深度优先算法实现/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jeocat">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="JEOCAT">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/10/23/省市县数据的深度优先算法实现/" itemprop="url">Unbenannt</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-10-23T00:08:23+08:00">
+                2017-10-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div></pre></td><td class="code"><pre><div class="line"> // 深度优先</div><div class="line">const findPathDFS = (data, goal) =&gt; &#123;</div><div class="line">    let startTime = new Date().getTime();</div><div class="line">    let dataSource = data;</div><div class="line">    let res = [];</div><div class="line">    return (function dfs(data) &#123;</div><div class="line"></div><div class="line">        /**</div><div class="line">         * 先压入 dataSource 的第一个元素，</div><div class="line">         * 如果该元素有 child ，则继续压入，重复到没有 child 为止</div><div class="line">         */</div><div class="line">        res.push(data);</div><div class="line">        if (data.child) &#123;</div><div class="line">            return dfs(data.child.shift());</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        /**</div><div class="line">         * 开始遍历 res，从 res 的最后一个元素开始匹配目标，</div><div class="line">         * 如果目标存在，返回目标，不再匹配</div><div class="line">         */</div><div class="line">        if (res[res.length - 1].name == goal) &#123;</div><div class="line">            let result = [];</div><div class="line">            let endTime = new Date().getTime();</div><div class="line">            let duration = (endTime - startTime) / 1000; // 搜索速度</div><div class="line">            result.unshift(res[res.length - 1].id, res[res.length - 1].name, res[res.length - 1].child, duration)</div><div class="line">            return result</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        /**</div><div class="line">         * 需要注意的是，如果没有匹配到结果，</div><div class="line">         * 则弹出 res 的最后一个元素，该元素是倒数第二个元素的 child，</div><div class="line">         * 因此在后续步骤需要删除倒数第二个元素的 child 中对应的这个 res.pop() 元素</div><div class="line">         */</div><div class="line">        res.pop();</div><div class="line"></div><div class="line">        /**</div><div class="line">         * 如果 res 数组没有剩余元素，并且 dataSource 还有剩余元素，</div><div class="line">         * 那么 res 继续压入 dataSource 的剩余元素，</div><div class="line">         * 否则返回 null</div><div class="line">         */</div><div class="line">        if (res.length &lt; 1) &#123;</div><div class="line">            return (dataSource.length &gt; 0 ?</div><div class="line">                dfs(dataSource.shift()) : null)</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        /**</div><div class="line">         * 因为 res 没有匹配到目标，</div><div class="line">         * 删除 res[res.length -1].child 即 lastNode.child</div><div class="line">         */</div><div class="line">        let lastNode = res[res.length - 1];</div><div class="line">        lastNode.child.shift();</div><div class="line"></div><div class="line">        /**</div><div class="line">         * 当 lastNode.child 没有剩余元素时，</div><div class="line">         * 删除 lastNode.child，继续匹配 res 弹出（最后一个）的元素</div><div class="line">         */</div><div class="line">        if (lastNode.child.length &lt; 1) &#123;</div><div class="line">            delete lastNode.child</div><div class="line">            return dfs(res.pop());</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        /**</div><div class="line">         * 删除 lastNode.child 第一个元素后，继续匹配 lastNode.child[0]</div><div class="line">         */</div><div class="line">        return dfs(lastNode.child[0])</div><div class="line"></div><div class="line">    &#125;)(dataSource.shift())</div><div class="line">&#125;;</div><div class="line">console.log(&apos;findPathDFS: &apos; + findPathDFS(home.child, &apos;惠东县&apos;)</div></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/10/23/省市县数据的广度优先算法实现/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jeocat">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="JEOCAT">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/10/23/省市县数据的广度优先算法实现/" itemprop="url">Unbenannt</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-10-23T00:07:22+08:00">
+                2017-10-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line">// 广度优先</div><div class="line">const findPathBFS = (data, goal) =&gt; &#123;</div><div class="line">    let startTime = new Date().getTime();</div><div class="line">    let res = [];</div><div class="line"></div><div class="line">    /**</div><div class="line">     * res 用展开数组的方式压入所有 data.child，</div><div class="line">     * 在遍历过程中，res 是一个不断增加元素的数组，</div><div class="line">     * 因为将 res 的 child，和 child 的 child 都横向压入到 res</div><div class="line">     */</div><div class="line">    res.push(...data.child);</div><div class="line"></div><div class="line">    /**</div><div class="line">     * 遍历 res 数组</div><div class="line">     * 如果 res[i] 匹配成功，则返回，不再匹配，</div><div class="line">     * 在每一次遍历过程中的匹配失败后，检查 res[i] 是否有 child 元素，如果有的话，将 child 元素展开并压入 res 数组，</div><div class="line">     * 如果最终匹配失败，返回 null</div><div class="line">     */</div><div class="line">    for (let i = 0; i &lt; res.length; i++) &#123;</div><div class="line"></div><div class="line">        if (res[i].name == goal) &#123;</div><div class="line">            let duration = new Date().getTime() - startTime;</div><div class="line">            let result = [];</div><div class="line">            result.unshift(res[i].id, res[i].name, res[i].child, duration)</div><div class="line">            return result             </div><div class="line">        &#125;</div><div class="line"></div><div class="line">        if (res[i].child) &#123;</div><div class="line">            res.push(...res[i].child);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    return null;</div><div class="line">&#125;</div><div class="line">console.log(&apos;findPathBFS: &apos; + findPathBFS(home, &apos;烟台市&apos;))</div></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/10/15/react/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="JeoCat">
+      <meta itemprop="name" content="Jeocat">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.jpg">
     </span>
@@ -365,7 +603,7 @@
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/10/10/cssjm2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="JeoCat">
+      <meta itemprop="name" content="Jeocat">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.jpg">
     </span>
@@ -520,7 +758,7 @@
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/10/09/cssjm1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="JeoCat">
+      <meta itemprop="name" content="Jeocat">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.jpg">
     </span>
@@ -675,7 +913,7 @@
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/10/02/vue1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="JeoCat">
+      <meta itemprop="name" content="Jeocat">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.jpg">
     </span>
@@ -821,7 +1059,7 @@
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/09/28/跨域/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="JeoCat">
+      <meta itemprop="name" content="Jeocat">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.jpg">
     </span>
@@ -945,7 +1183,7 @@
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/09/22/ES61/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="JeoCat">
+      <meta itemprop="name" content="Jeocat">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.jpg">
     </span>
@@ -1091,7 +1329,7 @@
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/09/15/jsengine/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="JeoCat">
+      <meta itemprop="name" content="Jeocat">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.jpg">
     </span>
@@ -1215,7 +1453,7 @@
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/09/09/linuxInstallMySQL/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="JeoCat">
+      <meta itemprop="name" content="Jeocat">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.jpg">
     </span>
@@ -1323,261 +1561,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/09/09/linuxnode/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="JeoCat">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="JEOCAT">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/09/09/linuxnode/" itemprop="url">Linux服务器的node环境配置</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-09-09T10:22:15+08:00">
-                2016-09-09
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h2 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h2><p>在Linux云服务器上配置node环境<br>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/09/09/linuxnode/#more" rel="contents">
-              Read More &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/09/07/模块化/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="JeoCat">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="JEOCAT">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/09/07/模块化/" itemprop="url">模块化</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-09-07T16:43:40+08:00">
-                2016-09-07
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h2 id="模块化"><a href="#模块化" class="headerlink" title="模块化"></a>模块化</h2><p>伴随着移动互联的大潮，当今越来越多的网站已经从网页模式进化到了 Webapp 模式。它们运行在现代的高级浏览器里，使用 HTML5、 CSS3、 ES6 等更新的技术来开发丰富的功能，网页已经不仅仅是完成浏览的基本需求，并且webapp通常是一个单页面应用，每一个视图通过异步的方式加载，这导致页面初始化和使用过程中会加载越来越多的 JavaScript 代码，这给前端开发的流程和资源组织带来了巨大的挑战。</p>
-<p>前端开发和其他开发工作的主要区别，首先是前端是基于多语言、多层次的编码和组织工作，其次前端产品的交付是基于浏览器，这些资源是通过增量加载的方式运行到浏览器端，如何在开发环境组织好这些碎片化的代码和资源，并且保证他们在浏览器端快速、优雅的加载和更新，就需要一个模块化系统，这个理想中的模块化系统是前端工程师多年来一直探索的难题。</p>
-<h3 id="定义："><a href="#定义：" class="headerlink" title="定义："></a>定义：</h3><p>模块通过将代码分割成不同文件和命名空间，为更大规模的程序提供了结构。<br>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/09/07/模块化/#more" rel="contents">
-              Read More &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1614,9 +1602,9 @@
             
               <img class="site-author-image" itemprop="image"
                 src="/images/avatar.jpg"
-                alt="JeoCat" />
+                alt="Jeocat" />
             
-              <p class="site-author-name" itemprop="name">JeoCat</p>
+              <p class="site-author-name" itemprop="name">Jeocat</p>
               <p class="site-description motion-element" itemprop="description"></p>
           </div>
 
@@ -1627,7 +1615,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-count">21</span>
                   <span class="site-state-item-name">Artikel</span>
                 </a>
               </div>
@@ -1692,7 +1680,7 @@
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
-  <span class="author" itemprop="copyrightHolder">JeoCat</span>
+  <span class="author" itemprop="copyrightHolder">Jeocat</span>
 
   
 </div>
