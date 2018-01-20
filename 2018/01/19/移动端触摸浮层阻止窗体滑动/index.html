@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Javascript," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="移动端触摸浮层，当滚动条到顶或者到底的时候 window 窗体通常会随着滑动。会导致退出浮层的时候不在页面原先的位置。  目前流行的 css 方法给 html 和 body 加 overflow: hidden; height: 100% 是无效的。正确的解决办法是给 body 加 position: fixed，可以有效阻止移动端的窗体滑动。但是因为窗体高度被改变的原因，一旦加上以上样式后，页">
+<meta name="keywords" content="Javascript">
+<meta property="og:type" content="article">
+<meta property="og:title" content="移动端触摸浮层阻止窗体滑动">
+<meta property="og:url" content="http://yoursite.com/2018/01/19/移动端触摸浮层阻止窗体滑动/index.html">
+<meta property="og:site_name" content="JEOCAT">
+<meta property="og:description" content="移动端触摸浮层，当滚动条到顶或者到底的时候 window 窗体通常会随着滑动。会导致退出浮层的时候不在页面原先的位置。  目前流行的 css 方法给 html 和 body 加 overflow: hidden; height: 100% 是无效的。正确的解决办法是给 body 加 position: fixed，可以有效阻止移动端的窗体滑动。但是因为窗体高度被改变的原因，一旦加上以上样式后，页">
+<meta property="og:updated_time" content="2018-01-20T03:14:29.445Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="移动端触摸浮层阻止窗体滑动">
+<meta name="twitter:description" content="移动端触摸浮层，当滚动条到顶或者到底的时候 window 窗体通常会随着滑动。会导致退出浮层的时候不在页面原先的位置。  目前流行的 css 方法给 html 和 body 加 overflow: hidden; height: 100% 是无效的。正确的解决办法是给 body 加 position: fixed，可以有效阻止移动端的窗体滑动。但是因为窗体高度被改变的原因，一旦加上以上样式后，页">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/01/19/移动端触摸浮层阻止窗体滑动/"/>
+
+
+
+
+
+  <title>移动端触摸浮层阻止窗体滑动 | JEOCAT</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JEOCAT</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/19/移动端触摸浮层阻止窗体滑动/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jeocat">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="JEOCAT">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">移动端触摸浮层阻止窗体滑动</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-01-19T10:03:06+08:00">
+                2018-01-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>移动端触摸浮层，当滚动条到顶或者到底的时候 window 窗体通常会随着滑动。会导致退出浮层的时候不在页面原先的位置。</p>
+</blockquote>
+<p>目前流行的 css 方法给 html 和 body 加 <code>overflow: hidden; height: 100%</code> 是无效的。正确的解决办法是给 body 加 <code>position: fixed</code>，可以有效阻止移动端的窗体滑动。但是因为窗体高度被改变的原因，一旦加上以上样式后，页面会回到最顶部。因此还要附加记录打开浮层前的 scrollTop 值，在关闭浮层后回到被记录 scrollTop 的位置。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">position: fixed;</div><div class="line">overflow: hidden;</div><div class="line">height: 100%;</div></pre></td></tr></table></figure>
+<p>看到张鑫峰老师的一篇文章 <a href="http://www.zhangxinxu.com/wordpress/2016/12/web-mobile-scroll-prevent-window-js-css/" target="_blank" rel="external">web移动端浮层滚动阻止window窗体滚动JS/CSS处理</a> 后，因为刚好在开发 vue 项目，就将其改为原生 js 并应用到项目了。以下贴出代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div></pre></td><td class="code"><pre><div class="line">export default function backScroll(container) &#123;</div><div class="line">    if (!container) &#123;</div><div class="line">        return false</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    var data = &#123;</div><div class="line">        posY: 0,</div><div class="line">        maxscroll: 0,</div><div class="line">        elScroll: container</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    touchStart()</div><div class="line">    touchMove()</div><div class="line">    touchEnd()</div><div class="line"></div><div class="line">    function touchStart() &#123;</div><div class="line">        data.elScroll.addEventListener(&apos;touchstart&apos;, function(event) &#123;</div><div class="line">            var events = event.touches[0] || event</div><div class="line">            data.posY = events.pageY</div><div class="line">            data.scrollY = data.elScroll.scrollTop</div><div class="line">            // scrollHeight 整个页面可滚动高度 - clientHeight 当前窗口高度 = 滑动到最低时的 scrollTop</div><div class="line">            data.maxscroll = data.elScroll.scrollHeight - data.elScroll.clientHeight</div><div class="line">        &#125;)</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    function touchMove() &#123;</div><div class="line">        data.elScroll.addEventListener(&apos;touchmove&apos;, function(event) &#123;</div><div class="line">            // 如果可滚动高度 - 当前窗口高度 &lt; 0 则说明页面可以禁止滚动行为</div><div class="line">            if (data.maxscroll &lt;= 0) &#123;</div><div class="line">                event.preventDefault()</div><div class="line">            &#125;</div><div class="line">            var scrollTop = data.elScroll.scrollTop</div><div class="line">            var events = event.touches[0] || event</div><div class="line">            // 计算移动距离</div><div class="line">            var distanceY = events.pageY - data.posY</div><div class="line">            // 上下边缘检测</div><div class="line">            // 往上滑，如果到头</div><div class="line">            if (distanceY &gt; 0 &amp;&amp; scrollTop === 0) &#123;</div><div class="line">                event.preventDefault()</div><div class="line">            &#125;</div><div class="line">            // 往下滑，如果到头</div><div class="line">            if (distanceY &lt; 0 &amp;&amp; (scrollTop + 1 &gt;= data.maxscroll)) &#123;</div><div class="line">                event.preventDefault()</div><div class="line">                return false</div><div class="line">            &#125;</div><div class="line">        &#125;)</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    function touchEnd() &#123;</div><div class="line">        data.elScroll.addEventListener(&apos;touchend&apos;, function() &#123;</div><div class="line">            data.maxscroll = 0</div><div class="line">        &#125;)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>因为是 vue 表单选择器的实践，在退出选择器后，事件监听会自行销毁。</p>
+</blockquote>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Javascript/" rel="tag"># Javascript</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/11/ ES6 Proxy 代理模式实现类型检查器（一）/" rel="next" title="ES6 Proxy 代理模式实现类型检查器（一）">
+                <i class="fa fa-chevron-left"></i> ES6 Proxy 代理模式实现类型检查器（一）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="Jeocat" />
+            
+              <p class="site-author-name" itemprop="name">Jeocat</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-name">Artikel</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">Kategorien</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-name">Tags</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jeocat</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Erstellt mit  <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

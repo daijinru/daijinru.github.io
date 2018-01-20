@@ -228,6 +228,260 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/19/移动端触摸浮层阻止窗体滑动/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jeocat">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="JEOCAT">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/01/19/移动端触摸浮层阻止窗体滑动/" itemprop="url">移动端触摸浮层阻止窗体滑动</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-01-19T10:03:06+08:00">
+                2018-01-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>移动端触摸浮层，当滚动条到顶或者到底的时候 window 窗体通常会随着滑动。会导致退出浮层的时候不在页面原先的位置。</p>
+</blockquote>
+<p>目前流行的 css 方法给 html 和 body 加 <code>overflow: hidden; height: 100%</code> 是无效的。正确的解决办法是给 body 加 <code>position: fixed</code>，可以有效阻止移动端的窗体滑动。但是因为窗体高度被改变的原因，一旦加上以上样式后，页面会回到最顶部。因此还要附加记录打开浮层前的 scrollTop 值，在关闭浮层后回到被记录 scrollTop 的位置。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">position: fixed;</div><div class="line">overflow: hidden;</div><div class="line">height: 100%;</div></pre></td></tr></table></figure>
+<p>看到张鑫峰老师的一篇文章 <a href="http://www.zhangxinxu.com/wordpress/2016/12/web-mobile-scroll-prevent-window-js-css/" target="_blank" rel="external">web移动端浮层滚动阻止window窗体滚动JS/CSS处理</a> 后，因为刚好在开发 vue 项目，就将其改为原生 js 并应用到项目了。以下贴出代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div></pre></td><td class="code"><pre><div class="line">export default function backScroll(container) &#123;</div><div class="line">    if (!container) &#123;</div><div class="line">        return false</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    var data = &#123;</div><div class="line">        posY: 0,</div><div class="line">        maxscroll: 0,</div><div class="line">        elScroll: container</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    touchStart()</div><div class="line">    touchMove()</div><div class="line">    touchEnd()</div><div class="line"></div><div class="line">    function touchStart() &#123;</div><div class="line">        data.elScroll.addEventListener(&apos;touchstart&apos;, function(event) &#123;</div><div class="line">            var events = event.touches[0] || event</div><div class="line">            data.posY = events.pageY</div><div class="line">            data.scrollY = data.elScroll.scrollTop</div><div class="line">            // scrollHeight 整个页面可滚动高度 - clientHeight 当前窗口高度 = 滑动到最低时的 scrollTop</div><div class="line">            data.maxscroll = data.elScroll.scrollHeight - data.elScroll.clientHeight</div><div class="line">        &#125;)</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    function touchMove() &#123;</div><div class="line">        data.elScroll.addEventListener(&apos;touchmove&apos;, function(event) &#123;</div><div class="line">            // 如果可滚动高度 - 当前窗口高度 &lt; 0 则说明页面可以禁止滚动行为</div><div class="line">            if (data.maxscroll &lt;= 0) &#123;</div><div class="line">                event.preventDefault()</div><div class="line">            &#125;</div><div class="line">            var scrollTop = data.elScroll.scrollTop</div><div class="line">            var events = event.touches[0] || event</div><div class="line">            // 计算移动距离</div><div class="line">            var distanceY = events.pageY - data.posY</div><div class="line">            // 上下边缘检测</div><div class="line">            // 往上滑，如果到头</div><div class="line">            if (distanceY &gt; 0 &amp;&amp; scrollTop === 0) &#123;</div><div class="line">                event.preventDefault()</div><div class="line">            &#125;</div><div class="line">            // 往下滑，如果到头</div><div class="line">            if (distanceY &lt; 0 &amp;&amp; (scrollTop + 1 &gt;= data.maxscroll)) &#123;</div><div class="line">                event.preventDefault()</div><div class="line">                return false</div><div class="line">            &#125;</div><div class="line">        &#125;)</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    function touchEnd() &#123;</div><div class="line">        data.elScroll.addEventListener(&apos;touchend&apos;, function() &#123;</div><div class="line">            data.maxscroll = 0</div><div class="line">        &#125;)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>因为是 vue 表单选择器的实践，在退出选择器后，事件监听会自行销毁。</p>
+</blockquote>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/11/ ES6 Proxy 代理模式实现类型检查器（一）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jeocat">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="JEOCAT">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/01/11/ ES6 Proxy 代理模式实现类型检查器（一）/" itemprop="url">ES6 Proxy 代理模式实现类型检查器（一）</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-01-11T14:10:38+08:00">
+                2018-01-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>有时候后端返回的数据类型不符合前端的要求，如果要逐一检查数据类型，代码量大且枯燥。这是本文的出发点。</p>
+</blockquote>
+<p>为什么我要使用 Proxy 开发类型检查呢？从 MDN <a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Reflect" target="_blank" rel="external">通往 Proxy</a> 上看，我们可以通过 Proxy 实现外部对对象访问的一个代理，并且可以在该代理函数上自由扩展，结果是降低函数、类或者对象的复杂度。</p>
+<p>先来构建一个 Validator 类。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div></pre></td><td class="code"><pre><div class="line">class Validator &#123;</div><div class="line">    constructor(args, argsTypes) &#123;</div><div class="line">        this.args = args;</div><div class="line">        this.argsTypes = argsTypes;</div><div class="line">        return this.createValidator(this.args, this.argsTypes);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    argsChecker(value, validator) &#123;</div><div class="line"></div><div class="line">        switch (validator) &#123;</div><div class="line">            case String:</div><div class="line">                return isString(value);</div><div class="line">                break;</div><div class="line">            case Number:</div><div class="line">                return isNumber(value);</div><div class="line">                break;</div><div class="line">            case Boolean:</div><div class="line">            	return isBoolean(value);</div><div class="line">            	break;</div><div class="line">            case Array:</div><div class="line">            	return isArray(value);</div><div class="line">            	break;</div><div class="line">            case Object:</div><div class="line">            	return isObject(value);</div><div class="line">            	break;</div><div class="line">            default:</div><div class="line">                return null</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        function isString(value) &#123;</div><div class="line">            if (typeof value === &apos;string&apos; &amp;&amp; value !== &apos;&apos;) &#123;</div><div class="line">                return value</div><div class="line">            &#125;</div><div class="line">            console.warn(&apos;This value require String but it is &apos; + value)</div><div class="line">            return &apos;&apos;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        function isNumber(value) &#123;</div><div class="line">            if (typeof value === &apos;number&apos;) &#123;</div><div class="line">                return value</div><div class="line">            &#125;</div><div class="line">            console.warn(&apos;This value require Number but it is &apos; + value)</div><div class="line">            return -1</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        function isBoolean(value) &#123;</div><div class="line">            if (typeof a === &apos;boolean&apos;) &#123;</div><div class="line">                return a</div><div class="line">            &#125;</div><div class="line">            console.warn(&apos;This value require Boolean but it is &apos; + value)</div><div class="line">            return undefined</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        function isArray(value) &#123;</div><div class="line">            if (!Array.isArray) &#123;</div><div class="line">                if (Object.prototype.toString.call(value) === &apos;[object Array]&apos;) &#123;</div><div class="line">                    return value</div><div class="line">                &#125;</div><div class="line">                console.warn(&apos;This value require Array but it is &apos; + value)</div><div class="line">                return []</div><div class="line">            &#125; else &#123;</div><div class="line">                if (Array.isArray(value) === true) &#123;</div><div class="line">                    return value</div><div class="line">                &#125;</div><div class="line">                console.warn(&apos;This value require Array but it is &apos; + value)</div><div class="line">                return []</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        function isObject(value) &#123;</div><div class="line">        	if (typeof value === &apos;object&apos;) &#123;</div><div class="line">        		return value</div><div class="line">        	&#125;</div><div class="line">        	return &#123;&#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    createValidator(args, argTypes) &#123;</div><div class="line">        var _this = this;</div><div class="line">        return new Proxy(args, &#123;</div><div class="line">            validators: argTypes,</div><div class="line">            get: function(target, key, proxy) &#123;</div><div class="line">                var validator = this.validators[key];</div><div class="line">                var value = _this.args[key];</div><div class="line">                if (target.hasOwnProperty(key)) &#123;</div><div class="line">                    var arg = _this.argsChecker(value, validator);</div><div class="line">                    _this.args[key] = arg;</div><div class="line">                    return Reflect.get(target, key, proxy)</div><div class="line">                &#125; else &#123;</div><div class="line">                	throw Error(&apos;non-exist value&apos;)</div><div class="line">                &#125;</div><div class="line">            &#125;,</div><div class="line">            set: function(target, key, value, proxy) &#123;</div><div class="line">                var validator = this.validators[key];</div><div class="line">                if (target.hasOwnProperty(key)) &#123;</div><div class="line">                    var arg = _this.argsChecker(value, validator);</div><div class="line">                    Reflect.set(target, key, arg, proxy)</div><div class="line">                &#125; else &#123;</div><div class="line">                	throw Error(&apos;non-exist value&apos;)</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/10/23/省市县数据的广度优先算法实现/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1313,254 +1567,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/09/15/jsengine/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jeocat">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="JEOCAT">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/09/15/jsengine/" itemprop="url">浏览器的JavaScript引擎</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-09-15T11:34:11+08:00">
-                2016-09-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h2 id="浏览器的组成"><a href="#浏览器的组成" class="headerlink" title="浏览器的组成"></a>浏览器的组成</h2><p>浏览器的核心是两个部分：渲染引擎和JavaScript解释器（又称JavaScript引擎）。<br>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/09/15/jsengine/#more" rel="contents">
-              Read More &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/09/09/linuxInstallMySQL/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jeocat">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="JEOCAT">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/09/09/linuxInstallMySQL/" itemprop="url">Linux 安装 MySQL</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-09-09T18:33:38+08:00">
-                2016-09-09
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>在Linux服务器上安装MySQL数据库<br>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/09/09/linuxInstallMySQL/#more" rel="contents">
-              Read More &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1615,7 +1621,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">23</span>
                   <span class="site-state-item-name">Artikel</span>
                 </a>
               </div>
@@ -1637,7 +1643,7 @@
               
               <div class="site-state-item site-state-tags">
                 
-                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-count">24</span>
                   <span class="site-state-item-name">Tags</span>
                 
               </div>
@@ -1676,7 +1682,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2017</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
