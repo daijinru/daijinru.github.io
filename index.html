@@ -228,6 +228,153 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/04/13/适配PHP项目的 webpack 多页面配置/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jeocat">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="JEOCAT">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/04/13/适配PHP项目的 webpack 多页面配置/" itemprop="url">html-webpakc-plugin 配置多页面</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-04-13T00:00:00+08:00">
+                2018-04-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>这是一份可以快速在不同 PHP 项目移植的 webpack 配置，适合仅使用 PHP 路由，支持版本号和走接口获取数据的前端项目。</p>
+<p>首先来看看打包编译的结果：</p>
+<p>经过打包编译后的资源文件将会放到 <code>public/static/</code>，模版文件放到 <code>resource/view/</code>。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">public</div><div class="line">	|_static</div><div class="line">		|_css</div><div class="line">			|_*.css</div><div class="line">		|_js</div><div class="line">			|_*.js</div><div class="line">			|_verdor.js</div><div class="line">			|_manifest.js</div><div class="line">resource</div><div class="line">	|_view</div><div class="line">		|_*.php</div></pre></td></tr></table></figure>
+<p>打包前的 src 文件在项目根目录:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">src</div><div class="line">	|_assets</div><div class="line">		|_css</div><div class="line">			|_*.css</div><div class="line">		|_js</div><div class="line">			|_*.js</div><div class="line">	|_*.html // 模版文件</div></pre></td></tr></table></figure>
+<p>在这里使用 webpack + html-webpack-plugin + extract-text-webpack-plugin 来完成目标。</p>
+<p>先编写一份静态资源和模版文件的入口配置：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line">// entries.config.js</div><div class="line"></div><div class="line">/**</div><div class="line"> * [ENTRIES 多入口配置]</div><div class="line"> */</div><div class="line">exports.ENTRIES = &#123;</div><div class="line">  vendor: &apos;./src/assets/js/vendor&apos;,</div><div class="line">  index: &apos;./src/assets/js/main.js&apos;,</div><div class="line">  PA: &apos;./src/assets/js/hello.js&apos;,</div><div class="line">  less: &apos;./src/assets/js/less.js&apos;</div><div class="line">&#125;</div><div class="line"></div><div class="line">/**</div><div class="line"> * [TEMPLATES html-webpack-plugin 多模版配置]</div><div class="line"> * @type &#123;String&#125; template 路径相对于 webpack 配置文件</div><div class="line"> * @type &#123;String&#125; filename 路径相对于 webpack output 路径</div><div class="line"> * @type &#123;Array&#125; chunks 取自以上 ENTRIES 对象中的 key</div><div class="line"> * 其它配置请参考 https://www.npmjs.com/package/html-webpack-plugin</div><div class="line"> */</div><div class="line">exports.TEMPLATES = [&#123;</div><div class="line">  template: &apos;./src/index.html&apos;,</div><div class="line">  filename: &apos;../resource/view/index.php&apos;,</div><div class="line">  chunks: [&apos;vendor&apos;, &apos;manifest&apos;, &apos;index&apos;]</div><div class="line">&#125;,&#123;</div><div class="line">  template: &apos;./src/test.html&apos;,</div><div class="line">  filename: &apos;../resource/view/test.php&apos;,</div><div class="line">  chunks: [&apos;vendor&apos;, &apos;manifest&apos;, &apos;PA&apos;]</div><div class="line">&#125;,&#123;</div><div class="line">  template: &apos;./src/less.html&apos;,</div><div class="line">  filename: &apos;../resource/view/less.php&apos;,</div><div class="line">  chunks: [&apos;vendor&apos;, &apos;manifest&apos;, &apos;less&apos;]</div><div class="line">&#125;]</div></pre></td></tr></table></figure>
+<p>在 webpack.config.js 引入该配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">// webpack.config.js</div><div class="line">// 引入配置项</div><div class="line">const ENTRIES = require(&apos;./entries.config.js&apos;).ENTRIES</div><div class="line">const TEMPLATES = require(&apos;./entries.config.js&apos;).TEMPLATES</div></pre></td></tr></table></figure>
+<p>其中 <code>ENTRIES</code> 配置到 <code>entry</code> 选项，<code>TEMPLATES</code> 对象需要遍历并生成一份 <code>html-webpack-plugin</code> 配置，然后合并到 <code>plugin</code> 选项中。</p>
+<p>具体配置如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">// webpack.config.js</div><div class="line">let WebpackPlugins = []</div><div class="line">const TEMPLATES = require(&apos;./entries.config.js&apos;).TEMPLATES</div><div class="line">WebpackPlugins = WebpackPlugins.concat(TEMPLATES.map(item =&gt; &#123;</div><div class="line">  return new HtmlWebpackPlugin(item)</div><div class="line">&#125;))</div><div class="line">module.exports = () =&gt; &#123;</div><div class="line">	// ... 其它配置</div><div class="line">	plugins: WebpackPlugins</div><div class="line">&#125;</div><div class="line">```	</div><div class="line"></div><div class="line">必须注意的是，`html-webpack-plugin` 的 `chunks` 选项照搬 webpack 配置中的 `entry` 对象。而 PHP 项目中静态资源的路径通常是 `/static/***`。问题是 `entry` 中的路径不能加 `/` 否则会提示不能使用绝对路径的错误。</div><div class="line"></div><div class="line">我们可以采用模版语法的方式来解决这个问题：</div><div class="line"></div><div class="line">在 `index.html` 的 `&lt;/body&gt;` 前写</div></pre></td></tr></table></figure>
+<p>  &lt;% for (var i = 0; i &lt; htmlWebpackPlugin.files.js.length; i++) { %&gt;<br>    <script type="text/javascript" src="<%='/' + htmlWebpackPlugin.files.js[i] %>"></script><br>  &lt;% } %&gt;<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">在 `&lt;head&gt;&lt;/head&gt;` 内写</div></pre></td></tr></table></figure></p>
+<p>  <link rel="stylesheet" type="text/css" href="<%=htmlWebpackPlugin.files.css[0] %>"><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">&gt; `extract-text-webpack-plugin` 插件能将 js 中引入的 css 拆分，并提供路径到 `html-webpack-plugin` 插件编译时的 `htmlWebpackPlugin.files` 对象中</div><div class="line"></div><div class="line">配置如下：</div></pre></td></tr></table></figure></p>
+<p>// webpack.config.js<br>module.exports = () =&gt; {<br>    module: {<br>        rules: [{<br>        test: /.css$/,<br>        use: ExtractTextPlugin.extract({<br>          fallback: ‘style-loader’,<br>          use: ‘css-loader’<br>        })<br>      },<br>      {<br>        test: /.less$/,<br>        use: ExtractTextPlugin.extract({<br>          fallback: ‘style-loader’,<br>          use: [‘css-loader’, ‘less-loader’, ‘postcss-loader’]<br>        })<br>      }]<br>    }<br>}<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">此外还需要给 `WebpackPlugins` 塞入一段配置：</div></pre></td></tr></table></figure></p>
+<p>// webpack.config.js<br>const extractTextPluginConfig = new ExtractTextPlugin({<br>  filename: ‘/static/css/[name].css?[contenthash]’,<br>  allChunks: true<br>})<br>WebpackPlugins.push(extractTextPluginConfig)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">编译成功后，我们可以在 `resource/view/` 下看到一份静态资源路径正确的 .php 文件</div></pre></td></tr></table></figure></p>
+<p>&lt;!DOCTYPE html&gt;</p>
+<html lang="en">
+
+<head><br>  <meta charset="utf-8"><br>  <title>element-starter</title><br><link href="/static/css/index.css?30c7c1357cd3f179a91620a257d3a1cb" rel="stylesheet"></head>
+
+<body><br>  <div id="app"></div><br><script type="text/javascript" src="/static/js/manifest.js?1bd9828a3b989a360b40"></script><script type="text/javascript" src="/static/js/vendor.js?8e9cb5738871c3a4bd53"></script><script type="text/javascript" src="/static/js/index.js?d1589dd0debd2a52c5b8"></script></body>
+
+<p></p></html><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">以上解决模版静态资源路径问题的方法有点麻烦，因为你需要在每一份模版源写上这些难看的模版语法。查询 `html-webpack-plugin` 官方文档，得知它在编译时提供了几个事件:</div><div class="line"></div><div class="line">* html-webpack-plugin-before-html-generation</div><div class="line">* html-webpack-plugin-before-html-processing</div><div class="line">* html-webpack-plugin-alter-asset-tags</div><div class="line">* html-webpack-plugin-after-html-processing</div><div class="line">* html-webpack-plugin-after-emit</div><div class="line"></div><div class="line">&gt; 我猜测该插件在进行模版渲染前的数据源是 `htmlWebpackPlugin` 对象，你可以使用模版语法将它打印出来看看。</div><div class="line"></div><div class="line">因此可以写一个 webpack 插件，监听该插件编译到模版渲染前，修改它的静态资源路径数据来达到目的。[参考文档](https://www.npmjs.com/package/html-webpack-plugin)</div><div class="line"></div><div class="line">这是一个很简单的 webpack 插件：</div></pre></td></tr></table></figure><p></p>
+<p>// webpack.config.js<br>// 监听 HtmlWebpackPlugin 插件并修改其中js的路径<br>function HtmlPluginPath(options) {}<br>HtmlPluginPath.prototype.apply = function(compiler) {<br>  compiler.plugin(‘compilation’, function(compilation) {<br>    compilation.plugin(‘html-webpack-plugin-before-html-processing’, function(htmlPluginData, callback) {<br>      htmlPluginData.assets.js = htmlPluginData.assets.js.map(item =&gt; {<br>        return ‘/‘ + item<br>      })<br>      callback(null, htmlPluginData)<br>    })<br>  })<br>}<br>WebpackPlugins.push(new HtmlPluginPath())<br>```</p>
+<p>该插件通过监听 <code>html-webpack-plugin-before-html-processing</code> 事件在模版渲染前将 <code>htmlPluginData.assets.js</code> 中的元素（资源路径）前添加了 <code>/</code> 来解决问题，可以放弃麻烦的模版语法了。 </p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/22/将博客放到你的 DOCK/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -257,7 +404,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Posted</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-03-22T18:41:00+08:00">
                 2018-03-22
@@ -387,7 +534,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Posted</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-01-19T10:03:06+08:00">
                 2018-01-19
@@ -516,7 +663,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Posted</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-01-11T14:10:38+08:00">
                 2018-01-11
@@ -641,7 +788,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Posted</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-10-23T16:00:06+08:00">
                 2017-10-23
@@ -760,7 +907,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Posted</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-10-20T00:00:12+08:00">
                 2017-10-20
@@ -879,7 +1026,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Posted</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-10-15T16:23:15+08:00">
                 2017-10-15
@@ -934,7 +1081,7 @@
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2017/10/15/react/#more" rel="contents">
-              Read more &raquo;
+              Read More &raquo;
             </a>
           </div>
           <!--/noindex-->
@@ -1013,7 +1160,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Posted</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-10-10T09:21:02+08:00">
                 2016-10-10
@@ -1034,7 +1181,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1089,7 +1236,7 @@
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2016/10/10/cssjm2/#more" rel="contents">
-              Read more &raquo;
+              Read More &raquo;
             </a>
           </div>
           <!--/noindex-->
@@ -1168,7 +1315,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Posted</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-10-09T09:21:02+08:00">
                 2016-10-09
@@ -1189,7 +1336,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1244,7 +1391,7 @@
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2016/10/09/cssjm1/#more" rel="contents">
-              Read more &raquo;
+              Read More &raquo;
             </a>
           </div>
           <!--/noindex-->
@@ -1323,7 +1470,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Posted</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-10-02T14:53:12+08:00">
                 2016-10-02
@@ -1344,7 +1491,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1390,131 +1537,7 @@
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2016/10/02/vue1/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/09/28/跨域/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jeocat">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="JEOCAT">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/09/28/跨域/" itemprop="url">跨域</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-09-28T10:03:06+08:00">
-                2016-09-28
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>一般情况下，当且仅当执行脚本的页面使用相同的协议（通常都是 http）、相同的端口（http默认使用80端口）和相同的 host（两个页面的 document.domain 的值相同）时，才允许不同页面上的脚本互相访问。只要协议、域名、端口有任何一个不通，都被当做为不同域。JavaScript跨域指通过JS在不同域之间进行数据传输或通讯。<br>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/09/28/跨域/#more" rel="contents">
-              Read more &raquo;
+              Read More &raquo;
             </a>
           </div>
           <!--/noindex-->
@@ -1605,8 +1628,8 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">24</span>
-                  <span class="site-state-item-name">posts</span>
+                  <span class="site-state-item-count">25</span>
+                  <span class="site-state-item-name">Artikel</span>
                 </a>
               </div>
             
@@ -1617,7 +1640,7 @@
               <div class="site-state-item site-state-categories">
                 
                   <span class="site-state-item-count">5</span>
-                  <span class="site-state-item-name">categories</span>
+                  <span class="site-state-item-name">Kategorien</span>
                 
               </div>
             
@@ -1628,7 +1651,7 @@
               <div class="site-state-item site-state-tags">
                 
                   <span class="site-state-item-count">24</span>
-                  <span class="site-state-item-name">tags</span>
+                  <span class="site-state-item-name">Tags</span>
                 
               </div>
             
@@ -1676,7 +1699,7 @@
 </div>
 
 
-  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+  <div class="powered-by">Erstellt mit  <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
 
 
 
