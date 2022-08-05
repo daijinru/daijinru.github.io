@@ -18,12 +18,10 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 
-title: Daijinru's Blog
+title: Daijinru
 email: jeocat@163.com
-description: >- # this means to ignore newlines until "baseurl:"
-  Write an awesome description for your new site here. You can edit this
-  line in _config.yml. It will appear in your document head meta (for
-  Google search results) and in your feed.xml site description.
+description: One programer
+  
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://daijinru.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: daijinru
@@ -34,6 +32,22 @@ github_username:  daijinru
 remote_theme: nicoelayda/celeste
 plugins:
   - jekyll-feed
+  - jekyll-coffeescript
+  - jekyll-paginate
+  - jekyll-gist
+
+permalink:           pretty
+paginate:            5
+paginate_path:       /blog/:num
+blog:
+  truncated_preview: false
+sass:
+sass_dir:          _sass
+style:             :compressed
+author:
+  name:              daijinru
+  url:               daijinru.github.io
+  email:             jeocat@163.com
 
 # Exclude from processing.
 # The following items will not be processed, by default.
