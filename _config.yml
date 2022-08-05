@@ -30,7 +30,8 @@ twitter_username: daijinru
 github_username:  daijinru
 
 # Build settings
-theme: minima
+# theme: minima
+remote_theme: nicoelayda/celeste
 plugins:
   - jekyll-feed
 
