@@ -1,0 +1,138 @@
+{
+  "main": {
+    "id": "5d388aff2ba62a7d",
+    "type": "split",
+    "children": [
+      {
+        "id": "4af2683d04a6b8ff",
+        "type": "leaf",
+        "state": {
+          "type": "markdown",
+          "state": {
+            "file": "_posts/2022-08-09-monorepo.md",
+            "mode": "source",
+            "source": false
+          }
+        }
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "ba3ab9a26407c432",
+    "type": "split",
+    "children": [
+      {
+        "id": "9fd5ee2a9344b1e7",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "3e124169dc80ca3d",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {}
+            }
+          },
+          {
+            "id": "33b50b6f2f0d9416",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "50096c8e0c7da329",
+            "type": "leaf",
+            "state": {
+              "type": "starred",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "c4c3c5f3aff21ccf",
+    "type": "split",
+    "children": [
+      {
+        "id": "8c2cfa830ace9ea4",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "203279e71c158e9f",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "_posts/2022-08-09-monorepo.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "ff96d533355311af",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "_posts/2022-08-09-monorepo.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "14071acfbb4be2b4",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "40d406e7ce8b7c20",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "_posts/2022-08-09-monorepo.md"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "active": "4af2683d04a6b8ff",
+  "lastOpenFiles": [
+    "_posts/2022-07-21-控制反转和依赖注入相关.md",
+    "_posts/2022-08-05-CodeSandBox.md",
+    "_posts/2022-08-09-monorepo.md",
+    "_posts/images/code_sand_box_20220805122605.png"
+  ]
+}
